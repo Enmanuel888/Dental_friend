@@ -146,7 +146,7 @@ public class frm_producto extends javax.swing.JFrame {
 
     private void btn_produActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btn_produActionPerformed
          // Este es el boton que permite registrar un paciente:
-        JOptionPane.showMessageDialog(null,"Has registrado un producto correctamente");
+        JOptionPane.showMessageDialog(null,"Has registrado un producto correctamente a");
     }//GEN-LAST:event_btn_produActionPerformed
 
     private void btn_salirActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btn_salirActionPerformed

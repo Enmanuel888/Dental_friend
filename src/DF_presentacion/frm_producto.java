@@ -5,25 +5,31 @@
  */
 package DF_presentacion;
 
+import static DF_presentacion.MyConnetion.getConnection;
+import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.Statement;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.JOptionPane;
+import javax.swing.table.DefaultTableModel;
 
 /**
  *
  * @author Alian Peralta
  */
 public class frm_producto extends javax.swing.JFrame {
-
+DefaultTableModel model;
     /**
      * Creates new form frm_producto
      */
     public frm_producto() {
         initComponents();
-        
+        this.model = (DefaultTableModel) tabla_producto.getModel();
+         MostrarEmpleados("");
+    
         
         
     }
@@ -66,11 +72,69 @@ public class frm_producto extends javax.swing.JFrame {
     }
 }
     
+     public void RefrescarTabla(){
+        try{
+            model.setColumnCount(0);
+            model.setRowCount(0);
+            tabla_producto.revalidate();
+        }
+        catch(Exception ex){
+            JOptionPane.showMessageDialog(null,"Error" + ex);
+        }
+    }
+    
+     public final void MostrarEmpleados (String empleado){
+          // este metodo funciona para mostrar todos los empleados almacenados en la base de datos con el defaulttablemodel
+       
+        MyConnetion cc = new MyConnetion();
+        
+        Connection cn = MyConnetion.getConnection();
+        
+        RefrescarTabla();
+        
+        model.addColumn("ID"); 
+        model.addColumn("Nombre producto");
+        model.addColumn("Categoria");
+        model.addColumn("Marca");
+        model.addColumn("fecha vencimiento");
+        model.addColumn("Descripcionj");
+        model.addColumn("Precio");
+        model.addColumn("Id Proveedor");
+        model.addColumn("Id Admin");
+        
+        this.tabla_producto.setModel(model);
+        
+        String sql = "Select * from producto";
+        
+        String [] dato = new String[9];
+        
+        try{ 
+            Statement st;
+            st = cn.createStatement();
+            ResultSet rs = st.executeQuery(sql);
+            while(rs.next()){  
+
+            dato[0] =rs.getString(1);
+            dato[1] =rs.getString(2);
+            dato[2] =rs.getString(3);
+            dato[3] =rs.getString(4);
+            dato[4] =rs.getString(5);
+            dato[5] =rs.getString(6);
+            dato[6] =rs.getString(7);
+            dato[7] =rs.getString(8);
+            dato[8] =rs.getString(9);
+                
+                model.addRow(dato);
+            }
+            tabla_producto.setModel(model);
+        }catch(SQLException e)
+        {
+            e.printStackTrace();
+        }
     
     
     
-    
-    
+     }
 
     /**
      * This method is called from within the constructor to initialize the form.
@@ -93,7 +157,7 @@ public class frm_producto extends javax.swing.JFrame {
         lbl_representacion = new javax.swing.JLabel();
         txt_Id_proveedor = new javax.swing.JTextField();
         lbl_Id_Admin = new javax.swing.JLabel();
-        btn_produ = new javax.swing.JButton();
+        btn_Vaciar = new javax.swing.JButton();
         lbl_img = new javax.swing.JLabel();
         txt_Descripcion = new javax.swing.JTextField();
         btn_salir = new javax.swing.JButton();
@@ -102,6 +166,11 @@ public class frm_producto extends javax.swing.JFrame {
         txt_Precio = new javax.swing.JTextField();
         txt_Id_Admin = new javax.swing.JTextField();
         txt_marca = new javax.swing.JTextField();
+        jScrollPane1 = new javax.swing.JScrollPane();
+        tabla_producto = new javax.swing.JTable();
+        btn_Registrar = new javax.swing.JButton();
+        btn_Actualizar = new javax.swing.JButton();
+        btn_Listado = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setTitle("Registro de productos");
@@ -128,47 +197,47 @@ public class frm_producto extends javax.swing.JFrame {
         lbl_Categoria.setText("Categoria:");
         panel_producto.add(lbl_Categoria, new org.netbeans.lib.awtextra.AbsoluteConstraints(200, 170, -1, -1));
         panel_producto.add(txt_Categoria, new org.netbeans.lib.awtextra.AbsoluteConstraints(200, 200, 150, -1));
-        panel_producto.add(txt_fecha_vencimiento, new org.netbeans.lib.awtextra.AbsoluteConstraints(200, 270, 150, -1));
+        panel_producto.add(txt_fecha_vencimiento, new org.netbeans.lib.awtextra.AbsoluteConstraints(590, 200, 150, -1));
 
         lbl_marca.setBackground(java.awt.Color.white);
         lbl_marca.setFont(new java.awt.Font("Times New Roman", 1, 18)); // NOI18N
         lbl_marca.setForeground(new java.awt.Color(81, 124, 164));
         lbl_marca.setText("Marca:");
-        panel_producto.add(lbl_marca, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 240, -1, -1));
+        panel_producto.add(lbl_marca, new org.netbeans.lib.awtextra.AbsoluteConstraints(400, 170, -1, -1));
 
         lbl_fecha_vencimiento.setBackground(java.awt.Color.white);
         lbl_fecha_vencimiento.setFont(new java.awt.Font("Times New Roman", 1, 18)); // NOI18N
         lbl_fecha_vencimiento.setForeground(new java.awt.Color(81, 124, 164));
         lbl_fecha_vencimiento.setText("Fecha vencimiento:");
-        panel_producto.add(lbl_fecha_vencimiento, new org.netbeans.lib.awtextra.AbsoluteConstraints(200, 240, -1, -1));
+        panel_producto.add(lbl_fecha_vencimiento, new org.netbeans.lib.awtextra.AbsoluteConstraints(590, 170, -1, -1));
 
         lbl_representacion.setBackground(java.awt.Color.white);
         lbl_representacion.setFont(new java.awt.Font("Times New Roman", 1, 18)); // NOI18N
         lbl_representacion.setForeground(new java.awt.Color(81, 124, 164));
         lbl_representacion.setText("Descripción:");
-        panel_producto.add(lbl_representacion, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 310, -1, -1));
-        panel_producto.add(txt_Id_proveedor, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 420, 150, 20));
+        panel_producto.add(lbl_representacion, new org.netbeans.lib.awtextra.AbsoluteConstraints(790, 170, -1, -1));
+        panel_producto.add(txt_Id_proveedor, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 270, 150, 20));
 
         lbl_Id_Admin.setBackground(java.awt.Color.white);
         lbl_Id_Admin.setFont(new java.awt.Font("Times New Roman", 1, 18)); // NOI18N
         lbl_Id_Admin.setForeground(new java.awt.Color(81, 124, 164));
         lbl_Id_Admin.setText("Id_Admin:");
-        panel_producto.add(lbl_Id_Admin, new org.netbeans.lib.awtextra.AbsoluteConstraints(200, 390, -1, 20));
+        panel_producto.add(lbl_Id_Admin, new org.netbeans.lib.awtextra.AbsoluteConstraints(200, 240, -1, 20));
 
-        btn_produ.setFont(new java.awt.Font("Times New Roman", 1, 24)); // NOI18N
-        btn_produ.setForeground(new java.awt.Color(94, 141, 147));
-        btn_produ.setText("Registrar");
-        btn_produ.setToolTipText("");
-        btn_produ.addActionListener(new java.awt.event.ActionListener() {
+        btn_Vaciar.setFont(new java.awt.Font("Times New Roman", 1, 24)); // NOI18N
+        btn_Vaciar.setForeground(new java.awt.Color(94, 141, 147));
+        btn_Vaciar.setText("Vaciar");
+        btn_Vaciar.setToolTipText("");
+        btn_Vaciar.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                btn_produActionPerformed(evt);
+                btn_VaciarActionPerformed(evt);
             }
         });
-        panel_producto.add(btn_produ, new org.netbeans.lib.awtextra.AbsoluteConstraints(120, 480, 130, 60));
+        panel_producto.add(btn_Vaciar, new org.netbeans.lib.awtextra.AbsoluteConstraints(490, 640, 130, 60));
 
         lbl_img.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Imagenes/lo.png"))); // NOI18N
         panel_producto.add(lbl_img, new org.netbeans.lib.awtextra.AbsoluteConstraints(50, 10, -1, -1));
-        panel_producto.add(txt_Descripcion, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 340, 150, -1));
+        panel_producto.add(txt_Descripcion, new org.netbeans.lib.awtextra.AbsoluteConstraints(790, 200, 150, -1));
 
         btn_salir.setIcon(new javax.swing.ImageIcon(getClass().getResource("/Imagenes/icons8-salida-32.png"))); // NOI18N
         btn_salir.setToolTipText("Salir al menu principal");
@@ -177,80 +246,67 @@ public class frm_producto extends javax.swing.JFrame {
                 btn_salirActionPerformed(evt);
             }
         });
-        panel_producto.add(btn_salir, new org.netbeans.lib.awtextra.AbsoluteConstraints(270, 480, 70, 60));
+        panel_producto.add(btn_salir, new org.netbeans.lib.awtextra.AbsoluteConstraints(1280, 0, 70, 60));
 
         lbl_Precio.setBackground(java.awt.Color.white);
         lbl_Precio.setFont(new java.awt.Font("Times New Roman", 1, 18)); // NOI18N
         lbl_Precio.setForeground(new java.awt.Color(81, 124, 164));
         lbl_Precio.setText("Precio");
-        panel_producto.add(lbl_Precio, new org.netbeans.lib.awtextra.AbsoluteConstraints(200, 310, -1, 20));
+        panel_producto.add(lbl_Precio, new org.netbeans.lib.awtextra.AbsoluteConstraints(980, 170, -1, 20));
 
         lbl_Id_proveedor.setBackground(java.awt.Color.white);
         lbl_Id_proveedor.setFont(new java.awt.Font("Times New Roman", 1, 18)); // NOI18N
         lbl_Id_proveedor.setForeground(new java.awt.Color(81, 124, 164));
         lbl_Id_proveedor.setText("Id_proveedor:");
-        panel_producto.add(lbl_Id_proveedor, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 390, -1, 20));
-        panel_producto.add(txt_Precio, new org.netbeans.lib.awtextra.AbsoluteConstraints(200, 340, 150, -1));
-        panel_producto.add(txt_Id_Admin, new org.netbeans.lib.awtextra.AbsoluteConstraints(200, 420, 150, -1));
-        panel_producto.add(txt_marca, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 270, 150, -1));
+        panel_producto.add(lbl_Id_proveedor, new org.netbeans.lib.awtextra.AbsoluteConstraints(10, 240, -1, 20));
+        panel_producto.add(txt_Precio, new org.netbeans.lib.awtextra.AbsoluteConstraints(980, 200, 150, -1));
+        panel_producto.add(txt_Id_Admin, new org.netbeans.lib.awtextra.AbsoluteConstraints(200, 270, 150, -1));
+        panel_producto.add(txt_marca, new org.netbeans.lib.awtextra.AbsoluteConstraints(400, 200, 150, -1));
 
-        getContentPane().add(panel_producto, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 0, 370, 560));
+        tabla_producto.setModel(new javax.swing.table.DefaultTableModel(
+            new Object [][] {
+
+            },
+            new String [] {
+
+            }
+        ));
+        jScrollPane1.setViewportView(tabla_producto);
+
+        panel_producto.add(jScrollPane1, new org.netbeans.lib.awtextra.AbsoluteConstraints(2, 320, 1350, 260));
+
+        btn_Registrar.setFont(new java.awt.Font("Times New Roman", 1, 24)); // NOI18N
+        btn_Registrar.setForeground(new java.awt.Color(94, 141, 147));
+        btn_Registrar.setText("Registrar");
+        btn_Registrar.setToolTipText("");
+        btn_Registrar.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btn_RegistrarActionPerformed(evt);
+            }
+        });
+        panel_producto.add(btn_Registrar, new org.netbeans.lib.awtextra.AbsoluteConstraints(340, 640, 130, 60));
+
+        btn_Actualizar.setFont(new java.awt.Font("Times New Roman", 1, 24)); // NOI18N
+        btn_Actualizar.setForeground(new java.awt.Color(94, 141, 147));
+        btn_Actualizar.setText("Actualizar ");
+        btn_Actualizar.setToolTipText("");
+        btn_Actualizar.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btn_ActualizarActionPerformed(evt);
+            }
+        });
+        panel_producto.add(btn_Actualizar, new org.netbeans.lib.awtextra.AbsoluteConstraints(640, 640, 150, 60));
+
+        btn_Listado.setFont(new java.awt.Font("Times New Roman", 1, 24)); // NOI18N
+        btn_Listado.setForeground(new java.awt.Color(94, 141, 147));
+        btn_Listado.setText("Listado");
+        btn_Listado.setToolTipText("");
+        panel_producto.add(btn_Listado, new org.netbeans.lib.awtextra.AbsoluteConstraints(810, 640, 130, 60));
+
+        getContentPane().add(panel_producto, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 0, 1350, 760));
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
-
-    private void btn_produActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btn_produActionPerformed
-    // Este boton permite registrar un producto:
-        
-         
-        String nom = txt_nombre_product.getText();
-        String categ = txt_Categoria.getText();
-        String marca = txt_marca.getText();
-        String fecha = txt_fecha_vencimiento.getText();
-        String desc = txt_Descripcion.getText();
-        String precio = txt_Precio.getText();
-        String prove = txt_Id_proveedor.getText();
-        String admin = txt_Id_Admin.getText();
-
-        if(admin.equals(""))
-        {
-            JOptionPane.showMessageDialog(null, "agrega el id_admin ");
-        }
-
-        else if(nom.equals(""))
-           {
-            JOptionPane.showMessageDialog(null, "Agrega el nombre del producto");
-           }      
-        else{
-            PreparedStatement ps;
-            String query = "INSERT INTO `producto`(`nombre`, `categoria`, `marca`, `descripcion`,`precio`,`fecha_vencimiento`,`id_proveedor`,`id_admin`) VALUES ( ?,?,?,?,?,?,?,?)";
-        try {
-        ps = MyConnetion.getConnection().prepareStatement(query);
-        
-        ps.setString(1, nom);
-        ps.setString(2, categ);
-        ps.setString(3, marca);
-         ps.setString(4, desc);
-         ps.setString(5, precio);
-         ps.setString(6, fecha);
-        ps.setString(7, prove);
-        ps.setString(8, admin);
-    
-        if(ps.executeUpdate() > 0)
-        {
-            JOptionPane.showMessageDialog(null, "Nuevo producto agregado");
-            Limpiar();
-        }
-        
-        } catch (SQLException ex) {
-        Logger.getLogger(frm_main.class.getName()).log(Level.SEVERE, null, ex);
-        JOptionPane.showMessageDialog(null, "Error: "+ex);
-        }
-         
-         
-         
-        }
-    }//GEN-LAST:event_btn_produActionPerformed
 
     private void btn_salirActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btn_salirActionPerformed
       // Este es el boton que permite salir al menu principal o el main
@@ -259,6 +315,128 @@ public class frm_producto extends javax.swing.JFrame {
         mf.pack();
         this.dispose();
     }//GEN-LAST:event_btn_salirActionPerformed
+
+    private void btn_RegistrarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btn_RegistrarActionPerformed
+        // TODO add your handling code here:
+        
+           //Boton para registrar datos nuevos a la BD
+      
+        String nom = txt_nombre_product.getText();
+        String cate = txt_Categoria .getText();
+        String mar = txt_marca.getText();
+        String fecha = txt_fecha_vencimiento.getText();
+        String desc = txt_Descripcion.getText();
+//        String pre = txt_Precio.getText();
+        String pre = String.valueOf(txt_Precio.getText());
+        String id_pro = txt_Id_proveedor.getText();
+        String id_adm = txt_Id_Admin.getText();
+        
+           
+        if(nom.equals(""))
+        {
+            JOptionPane.showMessageDialog(null, "Agrega un nombre");
+        }
+        
+        else if(cate.equals(""))
+        {
+            JOptionPane.showMessageDialog(null, "Agrega un categoria");
+        }      
+        else if(mar.equals(""))
+        {
+            JOptionPane.showMessageDialog(null, "Agrege su tipo de marca");
+        }
+        else if(fecha.equals(""))
+        {
+           JOptionPane.showMessageDialog(null, "Agrege su  fecha ");
+        }
+        else if(desc.equals(""))
+        {
+         JOptionPane.showMessageDialog(null, "Agrege su  descripcion");  
+        }
+        else if(pre.equals(""))
+        {
+        JOptionPane.showMessageDialog(null, "Agrege su precio");    
+        }
+         else if(id_pro.equals(""))
+        {
+        JOptionPane.showMessageDialog(null, "Agrege el id del proveedor ");    
+        }
+          else if(id_adm.equals(""))
+        {
+        JOptionPane.showMessageDialog(null, "Agrege el id del admin");    
+        }
+    
+        else{
+        PreparedStatement ps;
+        String query = "INSERT INTO `producto`(`nombre`, `categoria`, `marca`, `descripcion`, `precio`,`fecha_vencimiento`,`id_proveedor`,`id_admin`) VALUES (?,?,?,?,?,?,?,?)";
+        try {
+            ps = MyConnetion.getConnection().prepareStatement(query);
+            
+            ps.setString(1, nom);
+            ps.setString(2, cate);
+            ps.setString(3, mar);
+            ps.setString(4, fecha);
+            ps.setString(5, desc);
+            ps.setString(6, pre);
+            ps.setString(7, id_pro);
+            ps.setString(8, id_adm);
+            if(ps.executeUpdate() > 0)
+            {
+                JOptionPane.showMessageDialog(null, "Nuevo Empleado Agregado");
+                Limpiar();
+                MostrarEmpleados("");
+            }
+            
+        } catch (SQLException ex) {
+            Logger.getLogger(frm_main.class.getName()).log(Level.SEVERE, null, ex);
+            JOptionPane.showMessageDialog(null, "error "+ex);
+            }
+          }
+        
+    }//GEN-LAST:event_btn_RegistrarActionPerformed
+
+    private void btn_ActualizarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btn_ActualizarActionPerformed
+        // TODO add your handling code here:
+        
+         Connection con;
+ float prec =  Float.parseFloat(txt_Precio.getText());
+ 
+    try {
+        PreparedStatement ps;
+        con = getConnection();
+        ps = con.prepareStatement("UPDATE `producto` SET nombre=?, Categoria=?, marca=?, descripcion=?, precio=?, fecha_vencimiento=?, id_proveedor=?, id_admin=? WHERE id_producto=?");
+        ps.setString(1, txt_nombre_product.getText());
+        ps.setString(2, txt_Categoria.getText());
+        ps.setString(3, txt_marca.getText());
+        ps.setString(4, txt_Descripcion.getText());
+        
+        ps.setFloat(5, prec);
+        ps.setString(6, txt_Id_proveedor.getText());
+        ps.setString(7, txt_Id_Admin.getText());
+       
+
+        int res = ps.executeUpdate();
+
+        if (res > 0) {
+            JOptionPane.showMessageDialog(null, "Producto  Modificado");
+            MostrarEmpleados("");
+            
+        } else {
+            JOptionPane.showMessageDialog(null, "Error al Modificar producto");
+        }
+        con.close();
+
+    } catch (SQLException e) {
+        System.err.println(e);
+    }
+    
+    }//GEN-LAST:event_btn_ActualizarActionPerformed
+
+    private void btn_VaciarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btn_VaciarActionPerformed
+        // TODO add your handling code here:
+        
+                Limpiar();
+    }//GEN-LAST:event_btn_VaciarActionPerformed
 
     /**
      * @param args the command line arguments
@@ -296,8 +474,12 @@ public class frm_producto extends javax.swing.JFrame {
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JButton btn_produ;
+    private javax.swing.JButton btn_Actualizar;
+    private javax.swing.JButton btn_Listado;
+    private javax.swing.JButton btn_Registrar;
+    private javax.swing.JButton btn_Vaciar;
     private javax.swing.JButton btn_salir;
+    private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JLabel lbl_Categoria;
     private javax.swing.JLabel lbl_Id_Admin;
     private javax.swing.JLabel lbl_Id_proveedor;
@@ -309,6 +491,7 @@ public class frm_producto extends javax.swing.JFrame {
     private javax.swing.JLabel lbl_representacion;
     private javax.swing.JLabel lbl_titulo;
     private javax.swing.JPanel panel_producto;
+    private javax.swing.JTable tabla_producto;
     private javax.swing.JTextField txt_Categoria;
     private javax.swing.JTextField txt_Descripcion;
     private javax.swing.JTextField txt_Id_Admin;
